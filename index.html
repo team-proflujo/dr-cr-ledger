@@ -24,7 +24,8 @@
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                height: 100%;
+                min-height: 100%;
+                height: auto;
                 font-family: AppFont;
                 font-size: 1.1em;
                 user-select: none;
@@ -66,6 +67,7 @@
                 width: 100%;
                 min-height: 100%;
                 height: auto;
+                margin: 10vh 0;
             }
 
             svg {
@@ -122,13 +124,13 @@
 
             #dr-cr-table > thead > tr > th:first-child,
             #dr-cr-table > tbody > tr > td:first-child {
-                width: 20%;
+                width: 30%;
             }
 
-            #dr-cr-table > thead > tr > th.dd-cell,
+            /* #dr-cr-table > thead > tr > th.dd-cell,
             #dr-cr-table > tbody > tr > td.dd-cell {
                 width: 10%;
-            }
+            } */
 
             #dr-cr-table > thead > tr > th:last-child,
             #dr-cr-table > tbody > tr > td:last-child {
@@ -156,24 +158,26 @@
                 text-align: right;
             }
 
-            .result-correct td:not(.result),
-            #dr-cr-table td:not(:last-child).result-correct {
+            td.result svg {
+                width: 2em;
+                height: 2em;
+            }
+
+            #dr-cr-table tbody.result-correct > tr > td:not(.result),
+            #dr-cr-table td.result-correct {
                 background-color: #ccffcc;
             }
 
-            .result-wrong td:not(.result),
-            #dr-cr-table td:not(:last-child).result-wrong {
+            #dr-cr-table td.result-wrong {
                 background-color: #ffcccc;
             }
 
-            #dr-cr-table tbody.result-correct > tr > td.result,
-            #dr-cr-table td:last-child.result-correct {
-                color: green;
+            #dr-cr-table tbody.result-correct > tr > td.result {
+                color: #28a745;
             }
 
-            #dr-cr-table tbody.result-wrong > tr > td.result,
-            #dr-cr-table td:last-child.result-wrong {
-                color: red;
+            #dr-cr-table tbody.result-wrong > tr > td.result {
+                color: #dc3545;
             }
 
             #dr-cr-table > tbody:not(:nth-child(2))::before {
@@ -345,31 +349,154 @@
 
                 const AccountEvents = Object.freeze([
                     {
-                        'id': 1,
-                        'description': 'Raman gave ₹100',
-                        'drEntity': 'Cash',
-                        'drAccountType': AccountTypes.real,
-                        'drAmount': 100,
-                        'crEntity': 'Raman',
-                        'crAccountType': AccountTypes.personal,
-                        'crAmount': 100,
+                        id: 1,
+                        description: 'Business started with cash of Rs 1,25,000 brought in.',
+                        entities: ['Cash', 'Capital', 'Loan Received', 'Sales'],
+                        dr: { entity: 'Cash', accountType: AccountTypes.real, amount: 125000 },
+                        cr: { entity: 'Capital', accountType: AccountTypes.personal, amount: 125000 },
                     },
+
                     {
-                        'id': 2,
-                        'description': 'Fuel Charges ₹500',
-                        'drEntity': 'Fuel',
-                        'drAccountType': AccountTypes.nominal,
-                        'drAmount': 500,
-                        'crEntity': 'Cash',
-                        'crAccountType': AccountTypes.real,
-                        'crAmount': 500,
+                        id: 2,
+                        description: 'Cash purchase of Rs 1,500.',
+                        entities: ['Purchase', 'Cash', 'Sales', 'Salary'],
+                        dr: { entity: 'Purchase', accountType: AccountTypes.nominal, amount: 1500 },
+                        cr: { entity: 'Cash', accountType: AccountTypes.real, amount: 1500 },
                     },
+
+                    {
+                        id: 3,
+                        description: 'Product sold for Rs. 1,750 and cash received.',
+                        entities: ['Cash', 'Sales', 'Purchase', 'Indian Bank'],
+                        dr: { entity: 'Cash', accountType: AccountTypes.real, amount: 1750 },
+                        cr: { entity: 'Sales', accountType: AccountTypes.nominal, amount: 1750 },
+                    },
+
+                    {
+                        id: 4,
+                        description: 'Furniture purchased for Rs. 2,000 by issuing Indian Bank cheque.',
+                        entities: ['Furniture', 'Indian Bank', 'Canara Bank', 'Purchase'],
+                        dr: { entity: 'Furniture', accountType: AccountTypes.real, amount: 2000 },
+                        cr: { entity: 'Indian Bank', accountType: AccountTypes.real, amount: 2000 },
+                    },
+
+                    {
+                        id: 5,
+                        description: 'Salary of Rs. 2,250 paid to employee in cash.',
+                        entities: ['Salary', 'Cash', 'Employee', 'Indian Bank'],
+                        dr: { entity: 'Salary', accountType: AccountTypes.nominal, amount: 2250 },
+                        cr: { entity: 'Cash', accountType: AccountTypes.real, amount: 2250 },
+                    },
+
+                    {
+                        id: 6,
+                        description: 'Rent of Rs. 2,500 paid by Indian Bank cheque.',
+                        entities: ['Rent', 'Indian Bank', 'Expenses', 'Cash'],
+                        dr: { entity: 'Rent', accountType: AccountTypes.nominal, amount: 2500 },
+                        cr: { entity: 'Indian Bank', accountType: AccountTypes.real, amount: 2500 },
+                    },
+
+                    {
+                        id: 7,
+                        description: 'Credit sale of Rs. 2,750 made (on credit).',
+                        entities: ['Debtor', 'Sales', 'Purchase', 'Cash'],
+                        dr: { entity: 'Debtor', accountType: AccountTypes.personal, amount: 2750 },
+                        cr: { entity: 'Sales', accountType: AccountTypes.nominal, amount: 2750 },
+                    },
+
+                    {
+                        id: 8,
+                        description: 'Cheque for Rs. 3,000 received against earlier credit sale and deposited in Canara Bank.',
+                        entities: ['Canara Bank', 'Debtor', 'Sales', 'Cash'],
+                        dr: { entity: 'Canara Bank', accountType: AccountTypes.real, amount: 3000 },
+                        cr: { entity: 'Debtor', accountType: AccountTypes.personal, amount: 3000 },
+                    },
+
+                    {
+                        id: 9,
+                        description: 'Electricity bill of Rs. 3,250 paid by cash.',
+                        entities: ['Electricity Expense', 'Cash', 'Staff Welfare Expenses', 'Indian Bank'],
+                        dr: { entity: 'Electricity Expense', accountType: AccountTypes.nominal, amount: 3250 },
+                        cr: { entity: 'Cash', accountType: AccountTypes.real, amount: 3250 },
+                    },
+
+                    {
+                        id: 10,
+                        description: 'Loan repaid to extent of Rs. 3,500 by Canara Bank cheque.',
+                        entities: ['Loan', 'Canara Bank', 'Creditor', 'Indian Bank'],
+                        dr: { entity: 'Loan', accountType: AccountTypes.personal, amount: 3500 },
+                        cr: { entity: 'Canara Bank', accountType: AccountTypes.real, amount: 3500 },
+                    },
+
+                    {
+                        id: 11,
+                        description: 'Further cash of Rs. 3,750 brought in by the owner of the business.',
+                        entities: ['Cash', 'Capital', 'Sales', 'Loan'],
+                        dr: { entity: 'Cash', accountType: AccountTypes.real, amount: 3750 },
+                        cr: { entity: 'Capital', accountType: AccountTypes.personal, amount: 3750 },
+                    },
+
+                    {
+                        id: 12,
+                        description: 'Purchase of raw material for Rs. 4,000 by issuing Indian Bank cheque.',
+                        entities: ['Purchase', 'Indian Bank', 'Expenses', 'Cash'],
+                        dr: { entity: 'Purchase', accountType: AccountTypes.nominal, amount: 4000 },
+                        cr: { entity: 'Indian Bank', accountType: AccountTypes.real, amount: 4000 },
+                    },
+
+                    {
+                        id: 13,
+                        description: 'Sales return of Rs. 4,250 repaid in cash (Sales debited, Cash credited).',
+                        entities: ['Sales', 'Cash', 'Purchases', 'Expenses'],
+                        dr: { entity: 'Sales', accountType: AccountTypes.nominal, amount: 4250 },
+                        cr: { entity: 'Cash', accountType: AccountTypes.real, amount: 4250 },
+                    },
+
+                    {
+                        id: 14,
+                        description: 'Computer purchased for Rs. 34,500 by issue of Indian Bank cheque.',
+                        entities: ['Computers', 'Indian Bank', 'Purchase', 'Expenses'],
+                        dr: { entity: 'Computers', accountType: AccountTypes.real, amount: 34500 },
+                        cr: { entity: 'Indian Bank', accountType: AccountTypes.real, amount: 34500 },
+                    },
+
+                    {
+                        id: 15,
+                        description: 'Employee reimbursed by cash for expenses of Rs. 4,750 incurred for coming to office daily.',
+                        entities: ['Conveyance', 'Cash', 'Travel Expenses', 'Staff Welfare Expenses'],
+                        dr: { entity: 'Conveyance', accountType: AccountTypes.nominal, amount: 4750 },
+                        cr: { entity: 'Cash', accountType: AccountTypes.real, amount: 4750 },
+                    },
+
+                    {
+                        id: 16,
+                        description: 'Rental deposit of Rs. 50,000 paid by Canara Bank cheque.',
+                        entities: ['Rental Deposit', 'Canara Bank', 'Rent', 'Office Expenses'],
+                        dr: { entity: 'Rental Deposit', accountType: AccountTypes.real, amount: 50000 },
+                        cr: { entity: 'Canara Bank', accountType: AccountTypes.real, amount: 50000 },
+                    },
+
+                    {
+                        id: 17,
+                        description: 'Credit sales of Rs. 5,250 accounted.',
+                        entities: ['Debtor', 'Sales', 'Cash', 'Indian Bank'],
+                        dr: { entity: 'Debtor', accountType: AccountTypes.personal, amount: 5250 },
+                        cr: { entity: 'Sales', accountType: AccountTypes.nominal, amount: 5250 },
+                    },
+
+                    {
+                        id: 18,
+                        description: 'Cheque received against credit sales for Rs. 5,500 deposited in Canara Bank.',
+                        entities: ['Canara Bank', 'Debtor', 'Indian Bank', 'Sales'],
+                        dr: { entity: 'Canara Bank', accountType: AccountTypes.real, amount: 5500 },
+                        cr: { entity: 'Debtor', accountType: AccountTypes.personal, amount: 5500 },
+                    }
                 ]);
 
                 let closingBalance = 0;
 
-                function shuffleEvents() {
-                    const shuffled = [...AccountEvents];
+                function shuffleArray(arrayData) {
+                    const shuffled = [...arrayData];
 
                     for (i = shuffled.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
@@ -378,6 +505,24 @@
                     }
 
                     return shuffled;
+                }
+
+                function shuffleEvents() {
+                    let n = 10;
+
+                    const result = [...AccountEvents];
+
+                    let length = result.length;
+
+                    while (length) {
+                        const i = Math.floor(Math.random() * length--);
+
+                        [result[length], result[i]] = [result[i], result[length]];
+
+                        n--;
+                    }
+
+                    return result.slice(0, n);
                 }
 
                 function createSelect(options, className = '') {
@@ -401,11 +546,13 @@
                         }, 'txt-tx-type');
 
                     for (const [index, event] of shuffleEvents().entries()) {
+                        const entityDD = createSelect(shuffleArray(event.entities), 'txt-entity');
+
                         const tbody = $(`
                             <tbody event-id="${event.id}">
                                 <tr event-id="${event.id}">
                                     <td rowspan="2">${event.description}</td>
-                                    <td><input type="text" class="txt-entity" placeholder="e.g., Raman" /></td>
+                                    <td>${entityDD}</td>
                                     <td class="dd-cell">${accountTypesDD}</td>
                                     <td class="dd-cell">${txTypeDD}</td>
                                     <td class="amount-cell"><input type="number" class="txt-amount" placeholder="e.g., 1000.50" /></td>
@@ -413,7 +560,7 @@
                                 </tr>
 
                                 <tr event-id="${event.id}">
-                                    <td><input type="text" class="txt-entity" placeholder="e.g., Cash" /></td>
+                                    <td>${entityDD}</td>
                                     <td class="dd-cell">${accountTypesDD}</td>
                                     <td class="dd-cell">${txTypeDD}</td>
                                     <td class="amount-cell"><input type="number" class="txt-amount" placeholder="e.g., 1000.50" /></td>
@@ -431,6 +578,18 @@
 
                 function isStringExists(source, search) {
                     return source && search && source.replace(/\s/g, '').toLowerCase().includes(search.replace(/\s/g, '').toLowerCase());
+                }
+
+                function checkAndAddToGroup(group, elem) {
+                    // console.log('checkAndAddToGroup()', elem);
+
+                    if (group && group.length > 0) {
+                        group.add(elem);
+                    } else {
+                        group = $(elem);
+                    }
+
+                    return group;
                 }
 
                 $(document).on('change', '#dr-cr-table select, #dr-cr-table input, #dr-cr-table textarea', function() {
@@ -462,40 +621,88 @@
 
                     let isCorrect = true, showError = false;
 
+                    tbody.find('.result-correct').removeClass('result-correct');
+                    tbody.find('.result-wrong').removeClass('result-wrong');
+
                     for (const [index, row] of rowsData.entries()) {
                         if (row.entity && row.accountType && row.txType) {
                             showError = true;
 
-                            if (row.entity && rowsData.some((r, i) => i!=index && isStringExists(r.entity, row.entity))) {
+                            if (row.entity && rowsData.some((r, i) => i!=index && r.entity == row.entity)) {
                                 isCorrect = false;
+                                showError = tbody.find('td:has(.txt-entity)');
+                                break;
                             }
 
                             if (row.txType && rowsData.some((r, i) => i!=index && r.txType === row.txType)) {
                                 isCorrect = false;
+                                showError = tbody.find('td:has(.txt-tx-type)');
+                                break;
                             }
 
                             // console.log('isCorrect:', isCorrect, event, row);
 
-                            if (!isCorrect) break;
+                            if (row.txType === TX_TYPE_DEBIT) {
+                                if (row.entity !== event.dr.entity) {
+                                    // console.log(`tr:eq(${index}) > td:has(.txt-entity)`);
+                                    showError = checkAndAddToGroup(showError, tbody.find(`tr:eq(${index}) > td:has(.txt-entity)`));
 
-                            /* console.log(
-                                row.txType === TX_TYPE_DEBIT && isStringExists(event.drEntity, row.entity) && event.drAccountType === row.accountType && event.drAmount == row.amount,
-                                row.txType === TX_TYPE_CREDIT && isStringExists(event.crEntity, row.entity) && event.crAccountType === row.accountType && event.crAmount == row.amount
-                            ); */
+                                    isCorrect = false;
+                                }
 
-                            isCorrect = (
-                                row.txType === TX_TYPE_DEBIT && isStringExists(row.entity, event.drEntity) && event.drAccountType === row.accountType && event.drAmount == row.amount
-                            ) || (
-                                row.txType === TX_TYPE_CREDIT && isStringExists(row.entity, event.crEntity) && event.crAccountType === row.accountType && event.crAmount == row.amount
-                            );
+                                if (row.accountType !== event.dr.accountType) {
+                                    // console.log(`tr:eq(${index}) > td:has(.txt-account-type)`);
+                                    showError = checkAndAddToGroup(showError, tbody.find(`tr:eq(${index}) > td:has(.txt-account-type)`));
+
+                                    isCorrect = false;
+                                }
+
+                                if (row.amount != event.dr.amount) {
+                                    // console.log(`tr:eq(${index}) > td:has(.txt-amount)`);
+                                    showError = checkAndAddToGroup(showError, tbody.find(`tr:eq(${index}) > td:has(.txt-amount)`));
+
+                                    isCorrect = false;
+                                }
+                            } else if (row.txType === TX_TYPE_CREDIT) {
+                                if (row.entity !== event.cr.entity) {
+                                    // console.log(`tr:eq(${index}) > td:has(.txt-entity)`);
+                                    showError = checkAndAddToGroup(showError, tbody.find(`tr:eq(${index}) > td:has(.txt-entity)`));
+
+                                    isCorrect = false;
+                                }
+
+                                if (row.accountType !== event.cr.accountType) {
+                                    // console.log(`tr:eq(${index}) > td:has(.txt-account-type)`);
+                                    showError = checkAndAddToGroup(showError, tbody.find(`tr:eq(${index}) > td:has(.txt-account-type)`));
+
+                                    isCorrect = false;
+                                }
+
+                                if (row.amount != event.cr.amount) {
+                                    // console.log(`tr:eq(${index}) > td:has(.txt-amount)`);
+                                    showError = checkAndAddToGroup(showError, tbody.find(`tr:eq(${index}) > td:has(.txt-amount)`));
+
+                                    isCorrect = false;
+                                }
+                            }
                         } else {
                             isCorrect = false;
                             showError = false;
                         }
                     }
 
+                    // console.log('showError:', showError);
+
                     if (showError) {
-                        tbody.find('.result').text(isCorrect ? 'Correct' : 'Wrong');
+                        if (typeof(showError) === 'object') {
+                            if (showError.length > 0) {
+                                showError.addClass('result-wrong');
+                            } else {
+                                showError.addClass('result-correct');
+                            }
+                        }
+
+                        tbody.find('.result').html(isCorrect ? '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="ionicon" viewBox="0 0 512 512"><path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm108.25 138.29l-134.4 160a16 16 0 01-12 5.71h-.27a16 16 0 01-11.89-5.3l-57.6-64a16 16 0 1123.78-21.4l45.29 50.32 122.59-145.91a16 16 0 0124.5 20.58z"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="ionicon" viewBox="0 0 512 512"><path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm75.31 260.69a16 16 0 11-22.62 22.62L256 278.63l-52.69 52.68a16 16 0 01-22.62-22.62L233.37 256l-52.68-52.69a16 16 0 0122.62-22.62L256 233.37l52.69-52.68a16 16 0 0122.62 22.62L278.63 256z"/></svg>');
                         tbody.removeClass('result-correct result-wrong').addClass(isCorrect ? 'result-correct' : 'result-wrong');
                     } else {
                         tbody.find('.result').text('');
